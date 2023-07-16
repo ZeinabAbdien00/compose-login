@@ -98,10 +98,6 @@ private fun Context.buildPlayerView(exoPlayer: ExoPlayer) =
 @Composable
 fun SignUp(videoUri: Uri) {
     val context = LocalContext.current
-    val passwordFocusRequester = FocusRequester()
-    val emailFocusRequester = FocusRequester()
-    val phoneFocusRequester = FocusRequester()
-    val confirmPasswordFocusRequester = FocusRequester()
     val focusManager = LocalFocusManager.current
     val exoPlayer = remember { context.buildExoPlayer(videoUri) }
 
@@ -139,30 +135,26 @@ fun SignUp(videoUri: Uri) {
             }
 
             SignUpTextInput(SignUpInputType.FullName, keyboardActions = KeyboardActions(onDone = {
-                //emailFocusRequester.requestFocus()
                 focusManager.clearFocus()
             }))
 
-            SignUpTextInput(SignUpInputType.Email, keyboardActions = KeyboardActions(onDone = {
-                //phoneFocusRequester.requestFocus()
-                focusManager.clearFocus()
-            })
+            SignUpTextInput(
+                SignUpInputType.Email, keyboardActions = KeyboardActions(onDone = {
+                    focusManager.clearFocus()
+                })
             )
 
 
             SignUpTextInput(
                 SignUpInputType.PhoneNumber,
                 keyboardActions = KeyboardActions(onDone = {
-                    //passwordFocusRequester.requestFocus()
                     focusManager.clearFocus()
-                }),
-                focusRequester = phoneFocusRequester
+                })
             )
 
 
             SignUpPasswordTextInput(
                 SignUpInputType.Password,
-                focusRequester = passwordFocusRequester,
                 keyboardActions = KeyboardActions(onDone = {
                     //confirmPasswordFocusRequester.requestFocus()
                     focusManager.clearFocus()
@@ -171,7 +163,6 @@ fun SignUp(videoUri: Uri) {
 
             SignUpPasswordTextInput(
                 SignUpInputType.ConfirmPassword,
-                focusRequester = confirmPasswordFocusRequester,
                 keyboardActions = KeyboardActions(onDone = {
                     focusManager.clearFocus()
                 })
@@ -261,7 +252,6 @@ sealed class SignUpInputType(
 @Composable
 fun SignUpTextInput(
     inputType: SignUpInputType,
-    focusRequester: FocusRequester? = null,
     keyboardActions: KeyboardActions
 ) {
 
@@ -271,8 +261,7 @@ fun SignUpTextInput(
         value = value,
         onValueChange = { value = it },
         modifier = Modifier
-            .fillMaxWidth()
-            .focusRequester(focusRequester ?: FocusRequester()),
+            .fillMaxWidth(),
         leadingIcon = { Icon(imageVector = inputType.icon, null) },
         label = { Text(text = inputType.label) },
         shape = Shapes.small,
@@ -292,7 +281,6 @@ fun SignUpTextInput(
 @Composable
 fun SignUpPasswordTextInput(
     inputType: SignUpInputType,
-    focusRequester: FocusRequester? = null,
     keyboardActions: KeyboardActions
 ) {
     var password by rememberSaveable { mutableStateOf("") }
@@ -315,8 +303,7 @@ fun SignUpPasswordTextInput(
             disabledIndicatorColor = Color.Transparent
         ),
         modifier = Modifier
-            .fillMaxWidth()
-            .focusOrder(focusRequester ?: FocusRequester()),
+            .fillMaxWidth(),
         trailingIcon = {
             val image = if (passwordVisible)
                 Icons.Filled.Visibility
